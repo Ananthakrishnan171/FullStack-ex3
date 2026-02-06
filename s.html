@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>KCET Learning - Login & Quiz</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+body{font-family:Arial;background:#f0f4f8;padding:40px;}
+.box{width:450px;background:#fff;padding:25px;margin:auto;border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);}
+h2,h3{text-align:center;}
+input[type=text],input[type=password]{width:100%;padding:10px;margin:8px 0;
+border-radius:6px;border:1px solid #ccc;}
+.option{display:flex;align-items:center;padding:10px;margin:8px 0;
+border:1px solid #ddd;border-radius:6px;cursor:pointer;}
+.option input{margin-right:10px;}
+.buttons{text-align:center;margin-top:15px;}
+button{padding:8px 20px;margin:5px;cursor:pointer;}
+.error{color:red;text-align:center;}
+</style>
+</head>
+
+<body>
+
+<div class="box" id="loginBox">
+<h2>KCET Learning Login</h2>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<p class="error" id="loginError"></p>
+<div class="buttons"><button id="loginBtn">Login</button></div>
+</div>
+
+<div class="box" id="quizBox" style="display:none;">
+<h3 id="question"></h3>
+
+<label class="option"><input type="radio" name="option" value="0"><span id="o0"></span></label>
+<label class="option"><input type="radio" name="option" value="1"><span id="o1"></span></label>
+<label class="option"><input type="radio" name="option" value="2"><span id="o2"></span></label>
+<label class="option"><input type="radio" name="option" value="3"><span id="o3"></span></label>
+
+<p class="error" id="error"></p>
+
+<div class="buttons">
+<button id="prev">Previous</button>
+<button id="next">Next</button>
+</div>
+
+<h3 id="result"></h3>
+<div class="buttons"><button id="restart" style="display:none;">Restart</button></div>
+</div>
+
+<script>
+$(document).ready(function(){
+
+$("#loginBtn").click(function(){
+if($("#username").val()=="admin" && $("#password").val()=="1234")
+$("#loginBox").fadeOut(300,function(){$("#quizBox").fadeIn(300);});
+else $("#loginError").text("Invalid Login");
+});
+
+let q=[
+{q:"HTML stands for?",o:["Hyper Text Markup Language","High Text","Tool","None"],a:0},
+{q:"CSS is used for?",o:["Logic","Styling","DB","Server"],a:1},
+{q:"JavaScript is?",o:["Markup","Programming","OS","DB"],a:1},
+{q:"Image tag?",o:["<img>","<pic>","<src>","<image>"],a:0},
+{q:"CSS class symbol?",o:["#",".","*","@"],a:1},
+{q:"Link tag?",o:["<a>","<link>","<url>","<href>"],a:0},
+{q:"JS runs in?",o:["Compiler","Browser","Editor","DB"],a:1},
+{q:"Not datatype?",o:["String","Number","Boolean","Float"],a:3},
+{q:"CSS full form?",o:["Creative","Cascading","Color","Computer"],a:1},
+{q:"Paragraph tag?",o:["<p>","<para>","<text>","<pg>"],a:0}
+];
+
+let i=0,ans=[];
+
+function load(){
+$("#question").text((i+1)+". "+q[i].q);
+for(let x=0;x<4;x++)$("#o"+x).text(q[i].o[x]);
+$("input[name=option]").prop("checked",false);
+if(ans[i]!=undefined)$("input[value="+ans[i]+"]").prop("checked",true);
+$("#error").text("");
+}
+load();
+
+$("#next").click(function(){
+let s=$("input[name=option]:checked").val();
+if(s==undefined){$("#error").text("Select an answer");return;}
+ans[i]=s;i++;
+if(i<q.length)$("#quizBox").fadeOut(200,function(){load();$("#quizBox").fadeIn(200);});
+else result();
+});
+
+$("#prev").click(function(){if(i>0){i--;load();}});
+
+function result(){
+let score=0;
+for(let x=0;x<q.length;x++)if(ans[x]==q[x].a)score++;
+$("#quizBox *").hide();
+$("#result").show().text("Score : "+score+" / "+q.length);
+$("#restart").show();
+}
+
+$("#restart").click(function(){
+i=0;ans=[];
+$("#quizBox *").show();
+$("#restart").hide();$("#result").text("");
+load();
+});
+
+});
+</script>
+
+</body>
+</html>
